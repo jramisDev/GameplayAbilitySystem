@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "UTHUB_GAS_2025Character.generated.h"
 
 UCLASS(Blueprintable)
@@ -26,6 +27,13 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	FORCEINLINE virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag ActiveEventTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer GameplayStates;
+	
 
 protected:
 	virtual void BeginPlay() override;

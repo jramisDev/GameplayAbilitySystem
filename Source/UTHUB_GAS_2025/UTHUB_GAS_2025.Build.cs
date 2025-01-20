@@ -16,7 +16,7 @@ public class UTHUB_GAS_2025 : ModuleRules
         
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-	        "GameplayAbilities", "GameplayTasks"
+	        "GameplayAbilities", "GameplayTasks", "GameplayTags"
         });
         
         PublicIncludePaths.Add(ModuleDirectory + "/Public");

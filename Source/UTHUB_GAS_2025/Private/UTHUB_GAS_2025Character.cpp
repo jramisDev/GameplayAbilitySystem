@@ -3,6 +3,7 @@
 #include "UTHUB_GAS_2025Character.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameplayStatesManager.h"
 #include "UTHUB_ASC.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -65,9 +66,5 @@ void AUTHUB_GAS_2025Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Mejor lo inicializamos dentro del componente
-	// if(ASC)
-	// {
-	// 	ASC->InitAbilityActorInfo(this, this);
-	// }
+	GameplayStates.AddTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
 }
