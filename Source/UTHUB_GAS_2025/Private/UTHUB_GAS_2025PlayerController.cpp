@@ -53,6 +53,8 @@ void AUTHUB_GAS_2025PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AUTHUB_GAS_2025PlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AUTHUB_GAS_2025PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AUTHUB_GAS_2025PlayerController::OnTouchReleased);
+		
+		EnhancedInputComponent->BindAction(PrimaryAttackInput, ETriggerEvent::Started, this, &AUTHUB_GAS_2025PlayerController::Attack);
 	}
 	else
 	{

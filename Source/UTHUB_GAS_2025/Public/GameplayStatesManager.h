@@ -3,7 +3,7 @@
 #include "GameplayTagContainer.h"
 #include "GameplayTagsManager.h"
 
-class FGameplayStatesManager
+class FGameplayStatesManager : public FNoncopyable
 {
 	static FGameplayStatesManager* Singleton;
 	

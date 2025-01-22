@@ -1,10 +1,10 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "UTHUB_GAS_2025Character.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameplayBaseStateTags.h"
 #include "GameplayStatesManager.h"
 #include "UTHUB_ASC.h"
+#include "Attacks/AttackBase.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -66,5 +66,41 @@ void AUTHUB_GAS_2025Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameplayStates.AddTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
+	//GameplayStates.AddTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
+
+	check(CharacterStates)
+	GameplayStates.AddTag(CharacterStates->Tag_Alive);
+
+	if(CharacterData)
+	{
+		TArray<FCharacterAttributes*> OutData;
+		CharacterData->GetAllRows(TEXT(""), OutData);
+
+		if(!OutData.IsEmpty())
+		{
+			FCharacterAttributes** Attr = OutData.FindByPredicate([this](FCharacterAttributes* Row)
+			{
+				return Row->CharacterClassTag.MatchesTag(CharacterClassTag);
+			});
+			
+			if(Attr) CharacterAttributes = *Attr;
+		}
+
+	}
+	
+}
+
+void AUTHUB_GAS_2025Character::Jump()
+{
+	Super::Jump();
+
+	GameplayStates.RemoveTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
+}
+
+void AUTHUB_GAS_2025Character::Attack()
+{
+	if(const TSubclassOf<UAttackBase> PrimaryAttack = CharacterAttributes->PrimaryAttack)
+	{
+		PrimaryAttack->GetDefaultObject<UAttackBase>()->TryAttack(GetOwner());
+	}
 }

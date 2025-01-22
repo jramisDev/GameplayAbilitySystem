@@ -8,13 +8,38 @@
 #include "GameplayTagContainer.h"
 #include "UTHUB_GAS_2025Character.generated.h"
 
+class UAttackBase;
+class UGameplayBaseStateTags;
+
+USTRUCT()
+struct FCharacterAttributes : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere)	FGameplayTag CharacterClassTag;
+	UPROPERTY(EditAnywhere)	float Health;
+	UPROPERTY(EditAnywhere)	float AttackStrength;
+	UPROPERTY(EditAnywhere)	float Speed;
+	UPROPERTY(EditAnywhere)	UAnimMontage* AttackAnimation;
+	UPROPERTY(EditAnywhere)	TSubclassOf<UAttackBase> PrimaryAttack;
+};
+
 UCLASS(Blueprintable)
 class AUTHUB_GAS_2025Character : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
-	
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
+	FGameplayTag CharacterClassTag;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
+	FCharacterAttributes* CharacterAttributes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
+	UDataTable* CharacterData;
+	
 public:
 	AUTHUB_GAS_2025Character();
 
@@ -33,10 +58,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTagContainer GameplayStates;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UGameplayBaseStateTags* CharacterStates;
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Jump() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Attack();
 
 private:
 	/** Top down camera */
