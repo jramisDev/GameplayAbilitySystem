@@ -6,8 +6,10 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
+#include "UTHUB_ASC.h"
 #include "UTHUB_GAS_2025Character.generated.h"
 
+class UCoreAttributeSet;
 class UAttackBase;
 class UGameplayBaseStateTags;
 
@@ -22,11 +24,10 @@ public:
 	UPROPERTY(EditAnywhere)	float AttackStrength;
 	UPROPERTY(EditAnywhere)	float Speed;
 	UPROPERTY(EditAnywhere)	UAnimMontage* AttackAnimation;
-	UPROPERTY(EditAnywhere)	TSubclassOf<UAttackBase> PrimaryAttack;
 };
 
 UCLASS(Blueprintable)
-class AUTHUB_GAS_2025Character : public ACharacter, public IAbilitySystemInterface
+class AUTHUB_GAS_2025Character : public ACharacter, public IAbilitySystemInterface, public IGameplayTagCustomInterface
 {
 	GENERATED_BODY()
 
@@ -39,6 +40,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
 	UDataTable* CharacterData;
+
+	UPROPERTY()
+	UCoreAttributeSet* CoreAttributeSet;
 	
 public:
 	AUTHUB_GAS_2025Character();
@@ -52,7 +56,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	FORCEINLINE virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag ActiveEventTag;
 
@@ -62,14 +66,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UGameplayBaseStateTags* CharacterStates;
 
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	
+	virtual void AddTags(const FGameplayTag& InTag) override;
+	virtual void RemoveTags(FGameplayTag& InTag) override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Jump() override;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void Attack();
-
 private:
+	
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -80,6 +87,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
 	class UUTHUB_ASC* ASC;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+	class UGASDataComponent* GASDataComponent;
+	
+	void InitializeCharacter();
 	
 };
 

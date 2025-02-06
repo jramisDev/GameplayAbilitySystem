@@ -21,10 +21,16 @@ public:
 	void InitGameplayTags()
 	{
 		Tag_InteractEnabled = UGameplayTagsManager::Get().AddNativeGameplayTag(TEXT("GameStates.CanInteract"));
+		Tag_StatusHealthy = UGameplayTagsManager::Get().AddNativeGameplayTag(TEXT("Gameplay.Status.Healthy"));
+		Tag_StatusInfected = UGameplayTagsManager::Get().AddNativeGameplayTag(TEXT("Gameplay.Status.Infected"));
+		Tag_StatusContagious = UGameplayTagsManager::Get().AddNativeGameplayTag(TEXT("Gameplay.Status.Contagious"));
 	}
 
 	
 
 public:
 	FGameplayTag Tag_InteractEnabled;
+	FGameplayTag Tag_StatusHealthy;
+	FGameplayTag Tag_StatusInfected;
+	FGameplayTag Tag_StatusContagious;
 };

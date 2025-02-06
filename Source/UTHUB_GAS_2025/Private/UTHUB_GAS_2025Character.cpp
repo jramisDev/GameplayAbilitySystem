@@ -1,14 +1,15 @@
 #include "UTHUB_GAS_2025Character.h"
 
 #include "AbilitySystemComponent.h"
+#include "CoreAttributeSet.h"
 #include "GameplayBaseStateTags.h"
 #include "GameplayStatesManager.h"
 #include "UTHUB_ASC.h"
-#include "Attacks/AttackBase.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/GASDataComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -50,6 +51,9 @@ AUTHUB_GAS_2025Character::AUTHUB_GAS_2025Character()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	CoreAttributeSet = CreateDefaultSubobject<UCoreAttributeSet>(TEXT("Core Atrributes"));
+	GASDataComponent = CreateDefaultSubobject<UGASDataComponent>(TEXT("GAS Data"));
 }
 
 void AUTHUB_GAS_2025Character::Tick(float DeltaSeconds)
@@ -62,15 +66,8 @@ UAbilitySystemComponent* AUTHUB_GAS_2025Character::GetAbilitySystemComponent() c
 	return ASC;
 }
 
-void AUTHUB_GAS_2025Character::BeginPlay()
+void AUTHUB_GAS_2025Character::InitializeCharacter()
 {
-	Super::BeginPlay();
-
-	//GameplayStates.AddTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
-
-	check(CharacterStates)
-	GameplayStates.AddTag(CharacterStates->Tag_Alive);
-
 	if(CharacterData)
 	{
 		TArray<FCharacterAttributes*> OutData;
@@ -87,7 +84,33 @@ void AUTHUB_GAS_2025Character::BeginPlay()
 		}
 
 	}
-	
+}
+
+void AUTHUB_GAS_2025Character::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	TagContainer = GameplayStates;
+}
+
+void AUTHUB_GAS_2025Character::AddTags(const FGameplayTag& InTag)
+{
+	GameplayStates.AddTag(InTag);
+}
+
+void AUTHUB_GAS_2025Character::RemoveTags(FGameplayTag& InTag)
+{
+	GameplayStates.RemoveTag(InTag);
+}
+
+void AUTHUB_GAS_2025Character::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//GameplayStates.AddTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
+
+	check(CharacterStates)
+	GameplayStates.AddTag(CharacterStates->Tag_Alive);
+
+	InitializeCharacter();	
 }
 
 void AUTHUB_GAS_2025Character::Jump()
@@ -95,12 +118,4 @@ void AUTHUB_GAS_2025Character::Jump()
 	Super::Jump();
 
 	GameplayStates.RemoveTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
-}
-
-void AUTHUB_GAS_2025Character::Attack()
-{
-	if(const TSubclassOf<UAttackBase> PrimaryAttack = CharacterAttributes->PrimaryAttack)
-	{
-		PrimaryAttack->GetDefaultObject<UAttackBase>()->TryAttack(GetOwner());
-	}
 }

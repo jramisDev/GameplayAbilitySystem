@@ -10,21 +10,24 @@ AInteractive::AInteractive()
 
 void AInteractive::CheckTagCondition(AActor* TagOwner)
 {
-	if(const AUTHUB_GAS_2025Character* GasCharacter = Cast<AUTHUB_GAS_2025Character>(TagOwner))
+
+	if(UUTHUB_ASC* ASC = TagOwner->FindComponentByClass<UUTHUB_ASC>())
 	{
-		//FGameplayTag InteractiveTag = FGameplayTag::RequestGameplayTag(TEXT("Gameplay.States.CanInteract"));
-		FGameplayTag InteractiveTag = FGameplayStatesManager::Get().Tag_InteractEnabled;
-		if(!GasCharacter->GameplayStates.HasTag(InteractiveTag)) return;
-		
-		
-		if(GasCharacter->ActiveEventTag.IsValid())
-		{
-			if(GasCharacter->ActiveEventTag.MatchesTag(ConditionTag))
-			{
-				ExecuteAction();				
-			}
-		}
+		ASC->AddLooseGameplayTag(ConditionTag);
 	}
+	
+	// if(IGameplayTagAssetInterface* TagAsssetInterface = Cast<IGameplayTagAssetInterface>(TagOwner))
+	// {
+	// 	FGameplayTagContainer CharacterTags;
+	// 	TagAsssetInterface->GetOwnedGameplayTags(CharacterTags);
+	//
+	// 	if(!CharacterTags.HasTag(FGameplayStatesManager::Get().Tag_InteractEnabled)) return;
+	// 	
+	// 	if(CharacterTags.HasTag(ConditionTag))
+	// 	{
+	// 		ExecuteAction();
+	// 	}
+	// }
 }
 
 void AInteractive::BeginPlay()
