@@ -103,14 +103,21 @@ void AUTHUB_GAS_2025Character::RemoveTags(FGameplayTag& InTag)
 
 void AUTHUB_GAS_2025Character::BeginPlay()
 {
+	if(ensure(ASC))
+	{
+		auto& Delegate = ASC->GetGameplayAttributeValueChangeDelegate(UCoreAttributeSet::GetSpeedAttribute());
+		Delegate.AddLambda([this](const FOnAttributeChangeData& InChangeData)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = InChangeData.NewValue;
+		});
+	}
+	
 	Super::BeginPlay();
-
-	//GameplayStates.AddTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
-
+	
 	check(CharacterStates)
 	GameplayStates.AddTag(CharacterStates->Tag_Alive);
 
-	InitializeCharacter();	
+	InitializeCharacter();
 }
 
 void AUTHUB_GAS_2025Character::Jump()
@@ -118,4 +125,9 @@ void AUTHUB_GAS_2025Character::Jump()
 	Super::Jump();
 
 	GameplayStates.RemoveTag(FGameplayStatesManager::Get().Tag_InteractEnabled);
+}
+
+void AUTHUB_GAS_2025Character::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 }

@@ -2,6 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "CoreMinimal.h"
+#include "CoreAttributeSet.h"
 #include "Components/ActorComponent.h"
 #include "UTHUB_ASC.generated.h"
 
@@ -44,4 +45,26 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+private:
+
+	template<typename AttrSetType>
+	AttrSetType* GetAttributeSetFromOwner() const;
 };
+
+template <typename AttrSetType>
+AttrSetType* UUTHUB_ASC::GetAttributeSetFromOwner() const
+{
+	if(!GetOwner()) return nullptr;
+	
+	TArray<UObject*> OutSubobjects;
+	GetOwner()->GetDefaultSubobjects(OutSubobjects);
+
+	UObject** AttributeSet = OutSubobjects.FindByPredicate([](const UObject* Obj)
+	{
+		return Obj->IsA(AttrSetType::StaticClass());
+	});
+
+	if(!AttributeSet) return nullptr;
+
+	return Cast<AttrSetType>(*AttributeSet);
+}
