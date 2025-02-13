@@ -36,4 +36,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes | CommonSet") FGameplayAttributeData Speed;
 	ATTRIBUTE_ACCESSORS(UCoreAttributeSet, Speed);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes | CommonSet") FGameplayAttributeData OnFire;
+	ATTRIBUTE_ACCESSORS(UCoreAttributeSet, OnFire);
 };
