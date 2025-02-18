@@ -13,7 +13,7 @@ void UUTHUB_ASC::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilityActorInfo(GetOwner(), GetOwner());
-	InitializeAttributes(GetOwner());
+	//InitializeAttributes(GetOwner());
 }
 
 void UUTHUB_ASC::InitializeAttributes(const AActor* InOwnerActor) const
@@ -36,9 +36,34 @@ void UUTHUB_ASC::InitializeAttributes(const AActor* InOwnerActor) const
 	}
 }
 
+void UUTHUB_ASC::ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass)
+{
+	FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	const FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(EffectClass, 1, EffectContext);
+			
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+}
+
+void UUTHUB_ASC::InitializeAttributesFromEffects()
+{
+	UGASDataComponent* DataComponent = GetOwner()->FindComponentByClass<UGASDataComponent>();
+
+	if(DataComponent)
+	{
+		for(const auto& EffectClass : DataComponent->AttributeInitializers)
+		{
+			ApplyGameplayEffect(EffectClass);
+		}
+	}
+	
+}
+
 void UUTHUB_ASC::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
 	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	InitializeAttributesFromEffects();
 }
 
 void UUTHUB_ASC::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/GameplayAttributeEffector.h"
 #include "Components/GASDataComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -86,6 +87,17 @@ void AUTHUB_GAS_2025Character::InitializeCharacter()
 	}
 }
 
+void AUTHUB_GAS_2025Character::SetupAttributeCallbacks()
+{
+	//for(auto AttributeEffectorsPair : GASDataComponent->AttributeEffectors)
+	for(auto [Attribute, EffectorClass] : GASDataComponent->AttributeEffectors)
+	{
+		ASC->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(
+			EffectorClass->GetDefaultObject<UGameplayAttributeEffector>(),
+			&UGameplayAttributeEffector::ApplyAttributeEffector);
+	}
+}
+
 void AUTHUB_GAS_2025Character::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
 {
 	TagContainer = GameplayStates;
@@ -101,15 +113,28 @@ void AUTHUB_GAS_2025Character::RemoveTags(FGameplayTag& InTag)
 	GameplayStates.RemoveTag(InTag);
 }
 
+void AUTHUB_GAS_2025Character::ApplyGameplayEffects()
+{
+	if(ASC)
+	{
+		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+		const FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(SampleEffect, 1, EffectContext);
+				
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	}
+}
+
 void AUTHUB_GAS_2025Character::BeginPlay()
 {
 	if(ensure(ASC))
 	{
-		auto& Delegate = ASC->GetGameplayAttributeValueChangeDelegate(UCoreAttributeSet::GetSpeedAttribute());
-		Delegate.AddLambda([this](const FOnAttributeChangeData& InChangeData)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = InChangeData.NewValue;
-		});
+		// auto& Delegate = ASC->GetGameplayAttributeValueChangeDelegate(UCoreAttributeSet::GetSpeedAttribute());
+		// Delegate.AddLambda([this](const FOnAttributeChangeData& InChangeData)
+		// {
+		// 	GetCharacterMovement()->MaxWalkSpeed = InChangeData.NewValue;
+		// });
 	}
 	
 	Super::BeginPlay();

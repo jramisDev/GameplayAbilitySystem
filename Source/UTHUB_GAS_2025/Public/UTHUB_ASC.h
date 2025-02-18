@@ -38,6 +38,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void InitializeAttributes(const AActor* InOwnerActor) const;
+	void InitializeAttributesFromEffects();
 
 public:
 	
@@ -45,6 +46,9 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass);
 private:
 
 	template<typename AttrSetType>

@@ -41,6 +41,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
 	UDataTable* CharacterData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
+	TSubclassOf<UGameplayEffect> SampleEffect;
+	
 	UPROPERTY()
 	UCoreAttributeSet* CoreAttributeSet;
 	
@@ -71,6 +74,9 @@ public:
 	virtual void AddTags(const FGameplayTag& InTag) override;
 	virtual void RemoveTags(FGameplayTag& InTag) override;
 
+	UFUNCTION(CallInEditor)
+	void ApplyGameplayEffects();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Jump() override;
@@ -93,6 +99,8 @@ private:
 	class UGASDataComponent* GASDataComponent;
 	
 	void InitializeCharacter();
+
+	void SetupAttributeCallbacks();
 	
 };
 
