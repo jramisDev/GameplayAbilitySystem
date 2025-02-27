@@ -48,7 +48,11 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION(BlueprintCallable)
-	void ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass);
+	FActiveGameplayEffectHandle ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass);
+
+	// UFUNCTION(BlueprintCallable)
+	// void TestRemoveGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass);
+	
 private:
 
 	template<typename AttrSetType>

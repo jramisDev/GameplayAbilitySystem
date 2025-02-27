@@ -36,15 +36,25 @@ void UUTHUB_ASC::InitializeAttributes(const AActor* InOwnerActor) const
 	}
 }
 
-void UUTHUB_ASC::ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass)
+FActiveGameplayEffectHandle UUTHUB_ASC::ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass)
 {
 	FGameplayEffectContextHandle EffectContext = MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 
 	const FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(EffectClass, 1, EffectContext);
 			
-	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	return ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }
+
+// void UUTHUB_ASC::TestRemoveGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass)
+// {
+// 	FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+// 	EffectContext.AddSourceObject(this);
+//
+// 	const FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(EffectClass, 1, EffectContext);
+//
+// 	RemoveActiveGameplayEffect(*Spec.Data., 1);
+// }
 
 void UUTHUB_ASC::InitializeAttributesFromEffects()
 {

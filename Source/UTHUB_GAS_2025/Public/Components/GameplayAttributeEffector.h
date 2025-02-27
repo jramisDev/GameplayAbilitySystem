@@ -16,5 +16,5 @@ public:
 	void ApplyAttributeEffector(const FOnAttributeChangeData& InChangeData);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void RecieveApplyAttributeEffector(AActor* InActor);
+	void RecieveApplyAttributeEffector(AActor* InActor, float InNewValue, float InOldValue);
 };

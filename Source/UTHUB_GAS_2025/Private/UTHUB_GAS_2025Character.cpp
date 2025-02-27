@@ -128,21 +128,11 @@ void AUTHUB_GAS_2025Character::ApplyGameplayEffects()
 
 void AUTHUB_GAS_2025Character::BeginPlay()
 {
-	if(ensure(ASC))
-	{
-		// auto& Delegate = ASC->GetGameplayAttributeValueChangeDelegate(UCoreAttributeSet::GetSpeedAttribute());
-		// Delegate.AddLambda([this](const FOnAttributeChangeData& InChangeData)
-		// {
-		// 	GetCharacterMovement()->MaxWalkSpeed = InChangeData.NewValue;
-		// });
-	}
-	
 	Super::BeginPlay();
-	
-	check(CharacterStates)
-	GameplayStates.AddTag(CharacterStates->Tag_Alive);
 
-	InitializeCharacter();
+	//InitializeCharacter();
+
+	SetupAttributeCallbacks();
 }
 
 void AUTHUB_GAS_2025Character::Jump()
