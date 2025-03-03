@@ -49,11 +49,11 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	FActiveGameplayEffectHandle ApplyGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass);
-
-	// UFUNCTION(BlueprintCallable)
-	// void TestRemoveGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass);
 	
-private:
+	UFUNCTION(BlueprintCallable)
+	void ModifyAttributeGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass, float InPeriod, float InDamage);
+	
+private:	
 
 	template<typename AttrSetType>
 	AttrSetType* GetAttributeSetFromOwner() const;

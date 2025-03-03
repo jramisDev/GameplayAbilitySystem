@@ -11,7 +11,7 @@ public class UTHUB_GAS_2025 : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[]
         {
-	        "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput"
+	        "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "GameplayAbilities"
         });
         
         PrivateDependencyModuleNames.AddRange(new string[]

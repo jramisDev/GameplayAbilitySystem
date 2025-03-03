@@ -46,6 +46,18 @@ FActiveGameplayEffectHandle UUTHUB_ASC::ApplyGameplayEffect(const TSubclassOf<UG
 	return ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }
 
+void UUTHUB_ASC::ModifyAttributeGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass, const float InPeriod, float InDamage)
+{
+	FGameplayEffectContextHandle EffectContext = MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	const FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(EffectClass, 1, EffectContext);
+	Spec.Data.Get()->Period = InPeriod;
+	Spec.Data.Get()->Period = InPeriod;
+	
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+}
+
 // void UUTHUB_ASC::TestRemoveGameplayEffect(const TSubclassOf<UGameplayEffect>& EffectClass)
 // {
 // 	FGameplayEffectContextHandle EffectContext = MakeEffectContext();

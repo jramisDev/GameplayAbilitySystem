@@ -39,4 +39,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes | CommonSet") FGameplayAttributeData OnFire;
 	ATTRIBUTE_ACCESSORS(UCoreAttributeSet, OnFire);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes | CommonSet") FGameplayAttributeData Period;
+	ATTRIBUTE_ACCESSORS(UCoreAttributeSet, Period);
 };
