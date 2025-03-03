@@ -115,7 +115,7 @@ void AUTHUB_GAS_2025Character::RemoveTags(FGameplayTag& InTag)
 
 void AUTHUB_GAS_2025Character::ApplyGameplayEffects()
 {
-	if(ASC)
+	if(ASC && SampleEffect)
 	{
 		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 		EffectContext.AddSourceObject(this);
