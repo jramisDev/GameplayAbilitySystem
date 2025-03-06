@@ -35,10 +35,14 @@ class UTHUB_GAS_2025_API UUTHUB_ASC : public UAbilitySystemComponent
 public:
 	UUTHUB_ASC();
 	
+	void AddAbilityFromClass(const TSubclassOf<UGameplayAbility>& InGameplayAbilityClass);
+	
 protected:
 	virtual void BeginPlay() override;
+	
 	void InitializeAttributes(const AActor* InOwnerActor) const;
 	void InitializeAttributesFromEffects();
+
 
 public:
 	

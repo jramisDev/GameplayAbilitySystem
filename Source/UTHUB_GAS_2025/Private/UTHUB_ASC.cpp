@@ -82,10 +82,24 @@ void UUTHUB_ASC::InitializeAttributesFromEffects()
 	
 }
 
+void UUTHUB_ASC::AddAbilityFromClass(const TSubclassOf<UGameplayAbility>& InGameplayAbilityClass)
+{
+	FGameplayAbilitySpec Spec(InGameplayAbilityClass, 1, 0);
+	GiveAbility(Spec);
+}
+
 void UUTHUB_ASC::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
 	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+
 	InitializeAttributesFromEffects();
+	
+	UGASDataComponent* GASDataComponent = GetOwner()->FindComponentByClass<UGASDataComponent>();
+	if(GASDataComponent)
+	{
+		AddAbilityFromClass(GASDataComponent->DefaultAbility);
+	}
+	
 }
 
 void UUTHUB_ASC::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

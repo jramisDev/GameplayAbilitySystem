@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/GASDataComponent.h"
 #include "Engine/LocalPlayer.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -47,12 +48,25 @@ void AUTHUB_GAS_2025PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AUTHUB_GAS_2025PlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AUTHUB_GAS_2025PlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AUTHUB_GAS_2025PlayerController::OnSetDestinationReleased);
-
+		
 		// Setup touch input events
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AUTHUB_GAS_2025PlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AUTHUB_GAS_2025PlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AUTHUB_GAS_2025PlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AUTHUB_GAS_2025PlayerController::OnTouchReleased);
+
+		// Generic Action Input
+		// EnhancedInputComponent->BindAction(GenericActionInput, ETriggerEvent::Started, this, &ThisClass::ThrowGenericAction);
+
+		//EnhancedInputComponent->RemoveActionEventBinding();
+		
+		// if(const UGASDataComponent* DataComponent = GetPawn()->FindComponentByClass<UGASDataComponent>())
+		// {
+		// 	for(auto [InputAction, AbilityClass] : DataComponent->InputAbilityMapping->Mapping)
+		// 	{
+		// 		EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Started, this, &ThisClass::ExecuteAbility);
+		// 	}
+		// }
 	}
 	else
 	{
@@ -122,4 +136,44 @@ void AUTHUB_GAS_2025PlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+void AUTHUB_GAS_2025PlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+	UUTHUB_ASC* ASC = GetPawn()->FindComponentByClass<UUTHUB_ASC>();
+	
+	if(EnhancedInputComponent && ASC)
+	{
+		if(const UGASDataComponent* DataComponent = GetPawn()->FindComponentByClass<UGASDataComponent>())
+		{
+			for(auto [InputAction, AbilityClass] : DataComponent->InputAbilityMapping->Mapping)
+			{
+				ASC->AddAbilityFromClass(AbilityClass);
+				EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Started, this, &ThisClass::ExecuteAbility);
+			}
+		}
+	}	
+}
+
+void AUTHUB_GAS_2025PlayerController::ExecuteAbility(const FInputActionInstance& InputActionInstance)
+{
+	UGASDataComponent* GASDataComponent = GetPawn()->FindComponentByClass<UGASDataComponent>();
+	UUTHUB_ASC* ASC = GetPawn()->FindComponentByClass<UUTHUB_ASC>();
+	
+	if(GASDataComponent && GASDataComponent->InputAbilityMapping && ASC)
+	{
+		// auto Spec = ASC->FindAbilitySpecFromClass(GASDataComponent->DefaultAbility);
+		// ASC->CancelAbility(Spec->Ability);
+
+		// if(Spec->ActivationInfo.ActivationMode == EGameplayAbilityActivationMode::Confirmed)
+		// {
+		// 	ASC->TryActivateAbilityByClass(GASDataComponent->DefaultAbility);			
+		// }
+		
+		const UInputAction* Action = InputActionInstance.GetSourceAction();
+		ASC->TryActivateAbilityByClass(GASDataComponent->InputAbilityMapping->Mapping[Action]);			
+	}
 }
